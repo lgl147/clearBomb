@@ -1,29 +1,53 @@
 <template>
-  <div class="board" :style="boardStyle">
-    <div v-for="(row, rowIndex) in boards">
-      <v-card
-        v-for="(col, colIndex) in row"
-        class="d-flex justify-center align-center col pa-1"
-        :class="{ pointer: col != 0, 'bg-error': col == 9 }"
-        @click="open(rowIndex, colIndex)"
-        :ripple="false"
-        @contextmenu.prevent="mark(rowIndex, colIndex)"
-      >
-        <!-- <v-icon v-if="col == 9" icon="mdi-bomb" size="x-large"></v-icon> -->
-        <span v-if="col">{{ col }}</span>
-        <div class="unknown" v-if="ground[rowIndex][colIndex] < 2" v-ripple>
-          <v-icon icon="mdi-flag" color="error" v-if="ground[rowIndex][colIndex] == 1"></v-icon>
-        </div>
-      </v-card>
+  <div>
+    <div class="board" :style="boardStyle">
+      <div v-for="(row, rowIndex) in boards">
+        <v-card
+          v-for="(col, colIndex) in row"
+          class="d-flex justify-center align-center col pa-1"
+          :class="{ pointer: col != 0, 'bg-error': col == 9 }"
+          @click="open(rowIndex, colIndex)"
+          :ripple="false"
+          @contextmenu.prevent="mark(rowIndex, colIndex)"
+        >
+          <v-icon v-if="col == 9" icon="mdi-bomb" size="x-large"></v-icon>
+          <span v-if="col != 9 && col != 0">{{ col }}</span>
+          <div class="unknown" v-if="ground[rowIndex][colIndex] < 2" v-ripple>
+            <v-icon icon="mdi-flag" color="error" v-if="ground[rowIndex][colIndex] == 1"></v-icon>
+          </div>
+        </v-card>
+      </div>
     </div>
+    <v-overlay
+      activator="parent"
+      contained
+      v-model="gameover"
+      :close-on-back="false"
+      opacity="0.9"
+      class="align-center justify-center"
+    >
+      <div class="d-flex justify-center align-center flex-column h-100 w-100">
+        <div class="text-error text-h3 mb-4">结束</div>
+        <v-btn @click="init" color="primary">重新开始</v-btn>
+      </div>
+    </v-overlay>
   </div>
 </template>
 <script setup lang="ts">
 import { useAppStore } from "@/stores/app";
 
 let store = useAppStore();
-let boards = computed(() => store.boards);
+
+let props = defineProps({
+  title: {
+    type: [Boolean, String],
+    default: "clear bomb",
+  },
+});
+
 let ground = computed(() => store.ground);
+let boards = computed(() => store.boards);
+let gameover = computed(() => !store.gaming);
 let size = store.size;
 
 let boardStyle = computed(() => {
@@ -36,6 +60,9 @@ function open(row: number, col: number) {
 function mark(row: number, col: number) {
   store.mark(row, col);
 }
+function init() {
+  store.initBoard();
+}
 </script>
 
 <style lang="scss" scoped>
@@ -44,8 +71,8 @@ function mark(row: number, col: number) {
   flex-direction: column;
   justify-content: space-between;
   aspect-ratio: 1;
-  max-height: 100%;
   max-width: 100%;
+  max-height: 100%;
 }
 .col {
   aspect-ratio: 1;

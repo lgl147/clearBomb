@@ -4,7 +4,7 @@ import { defineStore } from "pinia";
 export const useAppStore = defineStore("app", {
   state: () => ({
     size: BOARD_SIZES[1],
-    diff: 2, // 平均值, 每9个方块中有"1"个炸弹
+    diff: 3, // 平均值, 每9个方块中有"1"个炸弹
     time: 0,
     gaming: false,
     first: true,
@@ -17,16 +17,19 @@ export const useAppStore = defineStore("app", {
       this.time = 0;
     },
     initBoard() {
+      localStorage.clear();
+      this.first = true;
       this.gaming = true;
       this.resetTime();
       let size = this.size;
-      this.boards = Array.from({ length: size }, () => Array(size).fill(0));
       this.ground = Array.from({ length: size }, () => Array(size).fill(0));
+      this.boards = Array.from({ length: size }, () => Array(size).fill(0));
       let bombs = ((size * size) / 3 / 3) * this.diff;
       this.bombsList = random(size * size, bombs);
       this.computeBomb();
     },
     computeBomb() {
+      this.boards = Array.from({ length: this.size }, () => Array(this.size).fill(0));
       this.bombsList.forEach((item: number) => {
         let row = Math.floor(item / this.size);
         let col = item % this.size;
@@ -43,7 +46,6 @@ export const useAppStore = defineStore("app", {
         this.first = false;
         // 第一步就挂
         if (this.boards[row][col] == 9) {
-          this.boards[row][col] = 0;
           let index = this.bombsList.findIndex((item: number) => item == row * this.size + col);
           this.bombsList.splice(index, 1);
           this.computeBomb();
@@ -93,7 +95,7 @@ export const useAppStore = defineStore("app", {
       }
     },
   },
-  persist: false,
+  persist: true,
 });
 
 export const BOARD_SIZES = [9, 12, 15];
