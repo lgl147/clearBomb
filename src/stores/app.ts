@@ -3,8 +3,8 @@ import { defineStore } from "pinia";
 
 export const useAppStore = defineStore("app", {
   state: () => ({
-    size: BOARD_SIZES[1],
-    diff: 3, // 平均值, 每9个方块中有"1"个炸弹
+    size: BOARD_SIZES[0],
+    diff: GAME_DIFFICULT[0], // 平均值, 每9个方块中有"1"个炸弹
     time: 0,
     gaming: false,
     first: true,
@@ -17,8 +17,8 @@ export const useAppStore = defineStore("app", {
       this.time = 0;
     },
     initBoard() {
-      localStorage.clear();
       this.first = true;
+      this.diff = GAME_DIFFICULT[0];
       this.gaming = true;
       this.resetTime();
       let size = this.size;
@@ -82,7 +82,9 @@ export const useAppStore = defineStore("app", {
         DIRECTIONS.forEach((dir) => {
           let r = row + dir[0];
           let c = col + dir[1];
-          if (this.ground[r][c] == 1) flagCount += 1;
+          if (r >= 0 && c >= 0 && r < this.size && c < this.size) {
+            if (this.ground[r][c] == 1) flagCount += 1;
+          }
         });
         if (flagCount != this.boards[row][col]) return;
         this.openAround(row, col);
@@ -93,6 +95,12 @@ export const useAppStore = defineStore("app", {
       } else {
         this.ground[row][col] = 1;
       }
+      this.checkWin();
+    },
+    checkWin() {
+      let bombs = this.bombsList.length;
+      let flags = this.ground.flat().filter((item: any) => item == 1);
+      console.log(flags);
     },
   },
   persist: true,
@@ -100,7 +108,7 @@ export const useAppStore = defineStore("app", {
 
 export const BOARD_SIZES = [9, 12, 15];
 
-export const GAME_DIFFICULT = [];
+export const GAME_DIFFICULT = [1, 2, 3];
 
 const DIRECTIONS = [
   [-1, -1],

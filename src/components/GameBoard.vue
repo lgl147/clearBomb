@@ -1,22 +1,20 @@
 <template>
-  <div>
-    <div class="board" :style="boardStyle">
-      <div v-for="(row, rowIndex) in boards">
-        <v-card
-          v-for="(col, colIndex) in row"
-          class="d-flex justify-center align-center col pa-1"
-          :class="{ pointer: col != 0, 'bg-error': col == 9 }"
-          @click="open(rowIndex, colIndex)"
-          :ripple="false"
-          @contextmenu.prevent="mark(rowIndex, colIndex)"
-        >
-          <v-icon v-if="col == 9" icon="mdi-bomb" size="x-large"></v-icon>
-          <span v-if="col != 9 && col != 0">{{ col }}</span>
-          <div class="unknown" v-if="ground[rowIndex][colIndex] < 2" v-ripple>
-            <v-icon icon="mdi-flag" color="error" v-if="ground[rowIndex][colIndex] == 1"></v-icon>
-          </div>
-        </v-card>
-      </div>
+  <div class="board" :style="boardStyle">
+    <div v-for="(row, rowIndex) in boards">
+      <v-card
+        v-for="(col, colIndex) in row"
+        class="d-flex justify-center align-center col pa-1"
+        :class="{ pointer: col != 0, 'bg-error': col == 9 }"
+        @click="open(rowIndex, colIndex)"
+        :ripple="false"
+        @contextmenu.prevent="mark(rowIndex, colIndex)"
+      >
+        <v-icon v-if="col == 9" icon="mdi-bomb" size="x-large"></v-icon>
+        <span v-if="col != 9 && col != 0">{{ col }}</span>
+        <div class="unknown" v-if="ground[rowIndex][colIndex] < 2" v-ripple>
+          <v-icon icon="mdi-flag" color="error" v-if="ground[rowIndex][colIndex] == 1"></v-icon>
+        </div>
+      </v-card>
     </div>
     <v-overlay
       activator="parent"
@@ -37,13 +35,6 @@
 import { useAppStore } from "@/stores/app";
 
 let store = useAppStore();
-
-let props = defineProps({
-  title: {
-    type: [Boolean, String],
-    default: "clear bomb",
-  },
-});
 
 let ground = computed(() => store.ground);
 let boards = computed(() => store.boards);
@@ -93,6 +84,6 @@ function init() {
   left: 0;
   top: 0;
   background: gray;
-  opacity: 0.9;
+  // opacity: 0.9;
 }
 </style>
