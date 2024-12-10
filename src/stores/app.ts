@@ -5,22 +5,19 @@ export const useAppStore = defineStore("app", {
   state: () => ({
     size: BOARD_SIZES[0],
     diff: GAME_DIFFICULT[0], // 平均值, 每9个方块中有"1"个炸弹
-    time: 0,
     gaming: false,
     first: true,
     boards: null as any,
     ground: null as any,
     bombsList: null as any,
+    isWin: false,
   }),
   actions: {
-    resetTime() {
-      this.time = 0;
-    },
     initBoard() {
+      console.log(this.diff, this.size);
+      this.isWin = false;
       this.first = true;
-      this.diff = GAME_DIFFICULT[0];
       this.gaming = true;
-      this.resetTime();
       let size = this.size;
       this.ground = Array.from({ length: size }, () => Array(size).fill(0));
       this.boards = Array.from({ length: size }, () => Array(size).fill(0));
@@ -98,9 +95,23 @@ export const useAppStore = defineStore("app", {
       this.checkWin();
     },
     checkWin() {
-      let bombs = this.bombsList.length;
-      let flags = this.ground.flat().filter((item: any) => item == 1);
-      console.log(flags);
+      let bombsLen = this.bombsList.length;
+      let flagLen = this.ground.flat().filter((item: any) => item == 1)?.length;
+      console.log(bombsLen, flagLen);
+      if (bombsLen != flagLen) return;
+      let flags: any = [];
+      this.ground.flat().forEach((item: any, index: any) => {
+        if (item == 1) flags.push(index);
+      });
+      console.log(JSON.stringify(flags), JSON.stringify(this.bombsList));
+      if (JSON.stringify(flags) == JSON.stringify(this.bombsList)) {
+        // 胜利
+        this.isWin = true;
+      } else {
+        // 失败
+        this.isWin = false;
+      }
+      this.gaming = false;
     },
   },
   persist: true,
@@ -134,5 +145,5 @@ function random(m: number, n: number) {
   }
 
   // 取前 n 个数字
-  return arr.slice(0, n);
+  return arr.slice(0, n).sort((a: any, b: any) => a - b);
 }

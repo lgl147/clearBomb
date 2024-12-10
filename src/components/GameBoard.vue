@@ -1,35 +1,24 @@
 <template>
-  <div class="board" :style="boardStyle">
-    <div v-for="(row, rowIndex) in boards">
-      <v-card
-        v-for="(col, colIndex) in row"
-        class="d-flex justify-center align-center col pa-1"
-        :class="{ pointer: col != 0, 'bg-error': col == 9 }"
-        @click="open(rowIndex, colIndex)"
-        :ripple="false"
-        @contextmenu.prevent="mark(rowIndex, colIndex)"
-      >
-        <v-icon v-if="col == 9" icon="mdi-bomb" size="x-large"></v-icon>
-        <span v-if="col != 9 && col != 0">{{ col }}</span>
-        <div class="unknown" v-if="ground[rowIndex][colIndex] < 2" v-ripple>
-          <v-icon icon="mdi-flag" color="error" v-if="ground[rowIndex][colIndex] == 1"></v-icon>
-        </div>
-      </v-card>
-    </div>
-    <v-overlay
-      activator="parent"
-      contained
-      v-model="gameover"
-      :close-on-back="false"
-      opacity="0.9"
-      class="align-center justify-center"
-    >
-      <div class="d-flex justify-center align-center flex-column h-100 w-100">
-        <div class="text-error text-h3 mb-4">结束</div>
-        <v-btn @click="init" color="primary">重新开始</v-btn>
+  <v-card>
+    <v-card-text class="board" :style="boardStyle">
+      <div v-for="(row, rowIndex) in boards">
+        <v-card
+          v-for="(col, colIndex) in row"
+          class="d-flex justify-center align-center col pa-1"
+          :class="{ pointer: col != 0, 'bg-error': col == 9 }"
+          @click="open(rowIndex, colIndex)"
+          :ripple="false"
+          @contextmenu.prevent="mark(rowIndex, colIndex)"
+        >
+          <v-icon v-if="col == 9" icon="mdi-bomb" size="x-large"></v-icon>
+          <span v-if="col != 9 && col != 0">{{ col }}</span>
+          <div class="unknown" v-if="ground[rowIndex][colIndex] < 2" v-ripple>
+            <v-icon icon="mdi-flag" color="error" v-if="ground[rowIndex][colIndex] == 1"></v-icon>
+          </div>
+        </v-card>
       </div>
-    </v-overlay>
-  </div>
+    </v-card-text>
+  </v-card>
 </template>
 <script setup lang="ts">
 import { useAppStore } from "@/stores/app";
@@ -38,11 +27,17 @@ let store = useAppStore();
 
 let ground = computed(() => store.ground);
 let boards = computed(() => store.boards);
-let gameover = computed(() => !store.gaming);
-let size = store.size;
+let size = computed(() => store.size);
+let gameover = ref(false);
+watch(
+  () => store.gaming,
+  (val) => {
+    gameover.value = !val;
+  }
+);
 
 let boardStyle = computed(() => {
-  return `grid-template-columns: repeat(${size}, 1fr)`;
+  return `grid-template-columns: repeat(${size.value}, 1fr)`;
 });
 
 function open(row: number, col: number) {
@@ -54,6 +49,10 @@ function mark(row: number, col: number) {
 function init() {
   store.initBoard();
 }
+onMounted(() => {
+  store.size = 9;
+  init();
+});
 </script>
 
 <style lang="scss" scoped>
@@ -84,6 +83,6 @@ function init() {
   left: 0;
   top: 0;
   background: gray;
-  // opacity: 0.9;
+  opacity: 0.9;
 }
 </style>
