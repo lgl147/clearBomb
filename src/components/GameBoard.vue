@@ -1,5 +1,25 @@
 <template>
   <v-card>
+    <v-card-title class="d-flex">
+      <v-select
+        density="compact"
+        v-model="store.size"
+        label="尺寸"
+        hide-details
+        variant="outlined"
+        :items="BOARD_SIZES"
+      ></v-select>
+      <v-select
+        density="compact"
+        v-model="store.diff"
+        label="难度"
+        hide-details
+        :items="GAME_DIFFICULT"
+        variant="outlined"
+        class="mx-4"
+      ></v-select>
+      <v-btn @click="init">重新开始</v-btn>
+    </v-card-title>
     <v-card-text class="board" :style="boardStyle">
       <div v-for="(row, rowIndex) in boards">
         <v-card
@@ -21,7 +41,7 @@
   </v-card>
 </template>
 <script setup lang="ts">
-import { useAppStore } from "@/stores/app";
+import { BOARD_SIZES, GAME_DIFFICULT, useAppStore } from "@/stores/app";
 
 let store = useAppStore();
 
@@ -49,10 +69,6 @@ function mark(row: number, col: number) {
 function init() {
   store.initBoard();
 }
-onMounted(() => {
-  store.size = 9;
-  init();
-});
 </script>
 
 <style lang="scss" scoped>

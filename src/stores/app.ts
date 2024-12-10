@@ -3,8 +3,8 @@ import { defineStore } from "pinia";
 
 export const useAppStore = defineStore("app", {
   state: () => ({
-    size: BOARD_SIZES[0],
-    diff: GAME_DIFFICULT[0], // 平均值, 每9个方块中有"1"个炸弹
+    size: BOARD_SIZES[1],
+    diff: GAME_DIFFICULT[1], // 平均值, 每9个方块中有"1"个炸弹
     gaming: false,
     first: true,
     boards: null as any,
@@ -14,7 +14,6 @@ export const useAppStore = defineStore("app", {
   }),
   actions: {
     initBoard() {
-      console.log(this.diff, this.size);
       this.isWin = false;
       this.first = true;
       this.gaming = true;
