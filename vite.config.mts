@@ -63,7 +63,7 @@ export default defineConfig({
     extensions: [".js", ".json", ".jsx", ".mjs", ".ts", ".tsx", ".vue"],
   },
   server: {
-    port: 40002,
+    port: 41002,
   },
   css: {
     preprocessorOptions: {
