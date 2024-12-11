@@ -12,9 +12,11 @@
       <v-select
         density="compact"
         v-model="store.diff"
+        item-value="value"
+        item-title="name"
         label="难度"
         hide-details
-        :items="GAME_DIFFICULT"
+        :items="diffs"
         variant="outlined"
         class="mx-4"
       ></v-select>
@@ -61,6 +63,14 @@ let boards = computed(() => store.boards);
 let size = computed(() => store.size);
 let gameover = ref(false);
 let selectedSize = ref();
+
+let diffs: any = computed(() => {
+  return GAME_DIFFICULT.map((item) => ({
+    name: ["", "简单", "中等", "困难"][item],
+    value: item,
+  }));
+});
+
 watch(
   () => store.gaming,
   (val) => {
