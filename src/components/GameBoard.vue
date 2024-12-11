@@ -1,9 +1,9 @@
 <template>
   <v-card>
-    <v-card-title class="d-flex">
+    <v-card-title class="d-flex align-center">
       <v-select
         density="compact"
-        v-model="store.size"
+        v-model="selectedSize"
         label="尺寸"
         hide-details
         variant="outlined"
@@ -18,8 +18,11 @@
         variant="outlined"
         class="mx-4"
       ></v-select>
-      <v-btn @click="init">重新开始</v-btn>
+      <v-btn @click="init" color="primary">重新开始</v-btn>
     </v-card-title>
+    <v-card-subtitle>
+      <div>已标记: {{ store.flagCount }} / 总炸弹数: {{ store.bombsList.length }}</div>
+    </v-card-subtitle>
     <v-card-text class="board" :style="boardStyle">
       <div v-for="(row, rowIndex) in boards">
         <v-card
@@ -33,10 +36,18 @@
           <v-icon v-if="col == 9" icon="mdi-bomb" size="x-large"></v-icon>
           <span v-if="col != 9 && col != 0">{{ col }}</span>
           <div class="unknown" v-if="ground[rowIndex][colIndex] < 2" v-ripple>
-            <v-icon icon="mdi-flag" color="error" v-if="ground[rowIndex][colIndex] == 1"></v-icon>
+            <v-icon icon="mdi-flag" size="x-large" color="error" v-if="ground[rowIndex][colIndex] == 1"></v-icon>
           </div>
         </v-card>
       </div>
+
+      <v-dialog v-model="gameover" contained persistent opacity=".7">
+        <v-card :title="store.isWin ? '胜利!' : '失败!'" :subtitle="store.isWin ? '您已取得成功' : '你已取得失败'">
+          <v-card-actions>
+            <v-btn color="primary" @click="init">重新开始</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-card-text>
   </v-card>
 </template>
@@ -49,6 +60,7 @@ let ground = computed(() => store.ground);
 let boards = computed(() => store.boards);
 let size = computed(() => store.size);
 let gameover = ref(false);
+let selectedSize = ref();
 watch(
   () => store.gaming,
   (val) => {
@@ -67,8 +79,13 @@ function mark(row: number, col: number) {
   store.mark(row, col);
 }
 function init() {
+  store.size = selectedSize.value;
   store.initBoard();
 }
+
+onMounted(() => {
+  selectedSize.value = store.size;
+});
 </script>
 
 <style lang="scss" scoped>
@@ -76,7 +93,7 @@ function init() {
   display: grid;
   flex-direction: column;
   justify-content: space-between;
-  aspect-ratio: 1;
+  // aspect-ratio: 1;
   max-width: 100%;
   max-height: 100%;
 }
@@ -99,6 +116,5 @@ function init() {
   left: 0;
   top: 0;
   background: gray;
-  opacity: 0.9;
 }
 </style>

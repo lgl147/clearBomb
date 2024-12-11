@@ -3,17 +3,19 @@ import { defineStore } from "pinia";
 
 export const useAppStore = defineStore("app", {
   state: () => ({
-    size: BOARD_SIZES[1],
-    diff: GAME_DIFFICULT[1], // 平均值, 每9个方块中有"1"个炸弹
+    size: BOARD_SIZES[0],
+    diff: GAME_DIFFICULT[0], // 平均值, 每9个方块中有"1"个炸弹
     gaming: false,
     first: true,
-    boards: null as any,
-    ground: null as any,
-    bombsList: null as any,
+    boards: [] as any,
+    ground: [] as any,
+    bombsList: [] as any,
+    flagCount: 0,
     isWin: false,
   }),
   actions: {
     initBoard() {
+      this.flagCount = 0;
       this.isWin = false;
       this.first = true;
       this.gaming = true;
@@ -87,17 +89,16 @@ export const useAppStore = defineStore("app", {
         return;
       }
       if (this.ground[row][col] == 1) {
+        this.flagCount--;
         this.ground[row][col] = 0;
       } else {
         this.ground[row][col] = 1;
+        this.flagCount++;
       }
       this.checkWin();
     },
     checkWin() {
-      let bombsLen = this.bombsList.length;
-      let flagLen = this.ground.flat().filter((item: any) => item == 1)?.length;
-      console.log(bombsLen, flagLen);
-      if (bombsLen != flagLen) return;
+      if (this.bombsList.length != this.flagCount) return;
       let flags: any = [];
       this.ground.flat().forEach((item: any, index: any) => {
         if (item == 1) flags.push(index);
