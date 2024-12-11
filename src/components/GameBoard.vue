@@ -85,6 +85,7 @@ function init() {
 
 onMounted(() => {
   selectedSize.value = store.size;
+  init();
 });
 </script>
 
