@@ -20,7 +20,7 @@
         variant="outlined"
         class="mx-4"
       ></v-select>
-      <v-btn @click="init" color="primary">重新开始</v-btn>
+      <v-btn @click="init" color="primary">开始</v-btn>
     </v-card-title>
     <v-card-subtitle>
       <div>已标记: {{ store.flagCount }} / 总炸弹数: {{ store.bombsList.length }}</div>
@@ -46,12 +46,13 @@
       </div>
 
       <v-dialog v-model="gameover" contained persistent opacity=".7">
-        <v-card :title="store.isWin ? '胜利!' : '失败!'" :subtitle="store.isWin ? '您已取得成功' : '你已取得失败'">
-          <v-card-text>
+        <v-card :subtitle="store.isWin ? '您已取得成功' : '你已取得失败'">
+          <v-card-title>
             <v-icon :icon="store.isWin ? 'mdi-emoticon' : 'mdi-emoticon-cry'"></v-icon>
-          </v-card-text>
+            {{ store.isWin ? "牛逼!" : "失败了~~不要灰心" }}
+          </v-card-title>
           <v-card-actions>
-            <v-btn color="primary" @click="init">重新开始</v-btn>
+            <v-btn color="primary" @click="init" block size="x-large">重新开始</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -146,5 +147,8 @@ onMounted(() => {
   top: 0;
   background: gray;
   z-index: 2;
+  &:hover {
+    opacity: 0.9;
+  }
 }
 </style>
