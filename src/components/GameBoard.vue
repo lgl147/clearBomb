@@ -46,10 +46,10 @@
           <div class="unknown" v-if="ground[rowIndex][colIndex] < 2" v-ripple>
             <v-icon icon="mdi-flag" size="x-large" color="error" v-if="ground[rowIndex][colIndex] == 1"></v-icon>
           </div>
-          <template v-else>
-            <v-icon v-if="col >= 9" icon="mdi-bomb" size="x-large" color="error"></v-icon>
-            <span v-if="col < 100 && col != 0">{{ col }}</span>
-          </template>
+          <!-- <template v-else> -->
+          <v-icon v-if="col >= 9" icon="mdi-bomb" size="x-large" color="error"></v-icon>
+          <span v-if="col < 100 && col != 0">{{ col }}</span>
+          <!-- </template> -->
         </v-card>
       </div>
 
@@ -159,6 +159,7 @@ onMounted(() => {
   top: 0;
   background: gray;
   z-index: 2;
+  opacity: 0.7;
   &:hover {
     opacity: 0.9;
   }

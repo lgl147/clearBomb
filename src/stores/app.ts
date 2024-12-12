@@ -24,9 +24,12 @@ export const useAppStore = defineStore("app", {
       this.ground = Array.from({ length: size }, () => Array(size).fill(0));
       let bombs = ((size * size) / 3 / 3) * this.diff;
       this.bombsList = random(size * size, bombs);
+      console.log(this.bombsList);
       this.computeBomb();
     },
     computeBomb() {
+      console.log("开始计算地雷");
+      console.time();
       this.boards = Array.from({ length: this.size }, () => Array(this.size).fill(0));
       this.bombsList.forEach((item: number) => {
         let row = Math.floor(item / this.size);
@@ -35,9 +38,11 @@ export const useAppStore = defineStore("app", {
         DIRECTIONS.forEach((dir) => {
           let r = row + dir[0];
           let c = col + dir[1];
-          if (r >= 0 && c >= 0 && r < this.size && c < this.size) this.boards[r][c] += 1;
+          if (r >= 0 && c >= 0 && r < this.size && c < this.size) this.boards[r][c]++;
         });
       });
+      console.log("计算结束");
+      console.timeEnd();
     },
     open(row: number, col: number) {
       if (this.first) {
