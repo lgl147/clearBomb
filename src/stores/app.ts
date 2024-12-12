@@ -54,8 +54,6 @@ export const useAppStore = defineStore("app", {
 
       this.ground[row][col] = 2;
 
-      navigator.vibrate(100);
-
       if (this.boards[row][col] == 9) {
         this.isWin = false;
         this.gaming = false;
@@ -107,23 +105,18 @@ export const useAppStore = defineStore("app", {
       this.ground.flat().forEach((item: any, index: any) => {
         if (item == 1) flags.push(index);
       });
-      console.log(JSON.stringify(flags), JSON.stringify(this.bombsList));
       if (JSON.stringify(flags) == JSON.stringify(this.bombsList)) {
-        // 胜利
         this.isWin = true;
       } else {
-        // 失败
         this.isWin = false;
       }
       this.gaming = false;
-      navigator.vibrate(300);
     },
     checkOpenWin() {
       let unopens = this.ground.flat().filter((item: any) => item != 2).length;
       if (unopens == this.bombsList.length) {
         this.isWin = true;
         this.gaming = false;
-        navigator.vibrate(300);
       }
     },
   },
