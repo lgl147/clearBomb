@@ -24,7 +24,7 @@
     </v-card-title>
     <v-card-subtitle class="d-flex align-center justify-space-between">
       <div>已标记: {{ store.flagCount }} / 总炸弹数: {{ store.bombsList.length }}</div>
-      <div>
+      <div @click="store.heart = 3">
         <v-icon
           v-for="(item, index) in 3"
           :icon="heart > index ? 'mdi-heart' : 'mdi-heart-broken'"
@@ -39,8 +39,9 @@
           class="d-flex justify-center align-center col overflow-hidden"
           :class="{ pointer: col != 0 }"
           :ripple="false"
-          @click="handleClick(rowIndex, colIndex)"
+          @click.meta="mooOpen(rowIndex, colIndex)"
           @click.right.prevent="mark(rowIndex, colIndex)"
+          @click="handleClick(rowIndex, colIndex)"
         >
           <div class="unknown" v-if="ground[rowIndex][colIndex] < 2" v-ripple>
             <v-icon icon="mdi-flag" size="x-large" color="error" v-if="ground[rowIndex][colIndex] == 1"></v-icon>
@@ -110,6 +111,9 @@ function open(row: number, col: number) {
 }
 function mark(row: number, col: number) {
   store.mark(row, col);
+}
+function mooOpen(row: number, col: number) {
+  store.mooOpen(row, col);
 }
 function init() {
   isMark.value = false;

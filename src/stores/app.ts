@@ -73,6 +73,12 @@ export const useAppStore = defineStore("app", {
         this.openAround(row, col);
       }
     },
+    mooOpen(row: number, col: number) {
+      console.log("超级打开");
+      this.ground[row][col] = 0;
+      this.first = true;
+      this.open(row, col);
+    },
     openAround(row: any, col: any, bombs?: any) {
       DIRECTIONS.forEach((dir) => {
         let r = row + dir[0];
