@@ -47,6 +47,9 @@
 
       <v-dialog v-model="gameover" contained persistent opacity=".7">
         <v-card :title="store.isWin ? '胜利!' : '失败!'" :subtitle="store.isWin ? '您已取得成功' : '你已取得失败'">
+          <v-card-text>
+            <v-icon :icon="store.isWin ? 'mdi-emoticon' : 'mdi-emoticon-cry'"></v-icon>
+          </v-card-text>
           <v-card-actions>
             <v-btn color="primary" @click="init">重新开始</v-btn>
           </v-card-actions>
