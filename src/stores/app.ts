@@ -12,15 +12,16 @@ export const useAppStore = defineStore("app", {
     bombsList: [] as any,
     flagCount: 0,
     isWin: false,
+    heart: 3,
   }),
   actions: {
     initBoard() {
+      this.heart = 3;
       this.gaming = true;
       this.flagCount = 0;
       this.first = true;
       let size = this.size;
       this.ground = Array.from({ length: size }, () => Array(size).fill(0));
-      this.boards = Array.from({ length: size }, () => Array(size).fill(0));
       let bombs = ((size * size) / 3 / 3) * this.diff;
       this.bombsList = random(size * size, bombs);
       this.computeBomb();
@@ -30,11 +31,11 @@ export const useAppStore = defineStore("app", {
       this.bombsList.forEach((item: number) => {
         let row = Math.floor(item / this.size);
         let col = item % this.size;
-        this.boards[row][col] = 9;
+        this.boards[row][col] = 100;
         DIRECTIONS.forEach((dir) => {
           let r = row + dir[0];
           let c = col + dir[1];
-          if (r >= 0 && c >= 0 && r < this.size && c < this.size && this.boards[r][c] < 9) this.boards[r][c] += 1;
+          if (r >= 0 && c >= 0 && r < this.size && c < this.size) this.boards[r][c] += 1;
         });
       });
     },
@@ -42,7 +43,7 @@ export const useAppStore = defineStore("app", {
       if (this.first) {
         this.first = false;
         // 第一步就挂
-        if (this.boards[row][col] == 9) {
+        if (this.boards[row][col] >= 100) {
           let index = this.bombsList.findIndex((item: number) => item == row * this.size + col);
           this.bombsList.splice(index, 1);
           this.computeBomb();
@@ -52,13 +53,19 @@ export const useAppStore = defineStore("app", {
 
       if (this.ground[row][col] == 1 || this.ground[row][col] == 2) return;
 
-      this.ground[row][col] = 2;
-
-      if (this.boards[row][col] == 9) {
-        this.isWin = false;
-        this.gaming = false;
-        return;
+      if (this.boards[row][col] >= 100) {
+        if (this.heart > 0) {
+          this.brokeHeart();
+          this.ground[row][col] = 1;
+          return;
+        } else {
+          this.isWin = false;
+          this.gaming = false;
+          return;
+        }
       }
+
+      this.ground[row][col] = 2;
 
       this.checkOpenWin();
 
@@ -118,6 +125,9 @@ export const useAppStore = defineStore("app", {
         this.isWin = true;
         this.gaming = false;
       }
+    },
+    brokeHeart() {
+      this.heart--;
     },
   },
   persist: true,

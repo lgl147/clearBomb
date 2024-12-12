@@ -22,8 +22,15 @@
       ></v-select>
       <v-btn @click="init" color="primary">开始</v-btn>
     </v-card-title>
-    <v-card-subtitle>
+    <v-card-subtitle class="d-flex align-center justify-space-between">
       <div>已标记: {{ store.flagCount }} / 总炸弹数: {{ store.bombsList.length }}</div>
+      <div>
+        <v-icon
+          v-for="(item, index) in 3"
+          :icon="heart > index ? 'mdi-heart' : 'mdi-heart-broken'"
+          :color="heart > index ? 'error' : 'default'"
+        ></v-icon>
+      </div>
     </v-card-subtitle>
     <v-card-text class="board" :style="boardStyle">
       <div v-for="(row, rowIndex) in boards">
@@ -39,8 +46,8 @@
             <v-icon icon="mdi-flag" size="x-large" color="error" v-if="ground[rowIndex][colIndex] == 1"></v-icon>
           </div>
           <template v-else>
-            <v-icon v-if="col == 9" icon="mdi-bomb" size="x-large" color="error"></v-icon>
-            <span v-if="col != 9 && col != 0">{{ col }}</span>
+            <v-icon v-if="col >= 9" icon="mdi-bomb" size="x-large" color="error"></v-icon>
+            <span v-if="col < 100 && col != 0">{{ col }}</span>
           </template>
         </v-card>
       </div>
@@ -74,6 +81,7 @@ let store = useAppStore();
 let ground = computed(() => store.ground);
 let boards = computed(() => store.boards);
 let size = computed(() => store.size);
+let heart = computed(() => store.heart);
 let gameover = ref(false);
 let selectedSize = ref();
 
