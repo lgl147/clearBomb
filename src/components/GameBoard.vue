@@ -29,17 +29,19 @@
       <div v-for="(row, rowIndex) in boards">
         <v-card
           v-for="(col, colIndex) in row"
-          class="d-flex justify-center align-center col pa-1"
-          :class="{ pointer: col != 0, 'bg-error': col == 9 }"
-          @click="open(rowIndex, colIndex)"
+          class="d-flex justify-center align-center col overflow-hidden"
+          :class="{ pointer: col != 0 }"
           :ripple="false"
-          @contextmenu.prevent="mark(rowIndex, colIndex)"
+          @click="handleClick(rowIndex, colIndex)"
+          @click.right.prevent="mark(rowIndex, colIndex)"
         >
-          <v-icon v-if="col == 9" icon="mdi-bomb" size="x-large"></v-icon>
-          <span v-if="col != 9 && col != 0">{{ col }}</span>
           <div class="unknown" v-if="ground[rowIndex][colIndex] < 2" v-ripple>
             <v-icon icon="mdi-flag" size="x-large" color="error" v-if="ground[rowIndex][colIndex] == 1"></v-icon>
           </div>
+          <template v-else>
+            <v-icon v-if="col == 9" icon="mdi-bomb" size="x-large" color="error"></v-icon>
+            <span v-if="col != 9 && col != 0">{{ col }}</span>
+          </template>
         </v-card>
       </div>
 
@@ -51,6 +53,13 @@
         </v-card>
       </v-dialog>
     </v-card-text>
+    <v-card-actions class="px-4 py-0 d-sm-none d-block">
+      <v-btn @click="isMark = !isMark" :color="isMark ? 'error' : 'primary'">
+        切换:
+        {{ isMark ? "标记" : "挖掘" }}
+        <v-icon :icon="isMark ? 'mdi-flag-variant-plus' : 'mdi-shovel'"></v-icon>
+      </v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 <script setup lang="ts">
@@ -63,6 +72,8 @@ let boards = computed(() => store.boards);
 let size = computed(() => store.size);
 let gameover = ref(false);
 let selectedSize = ref();
+
+let isMark = ref(false);
 
 let diffs: any = computed(() => {
   return GAME_DIFFICULT.map((item) => ({
@@ -89,13 +100,17 @@ function mark(row: number, col: number) {
   store.mark(row, col);
 }
 function init() {
+  isMark.value = false;
   store.size = selectedSize.value;
   store.initBoard();
 }
 
+function handleClick(rowIndex: any, colIndex: any) {
+  isMark.value ? mark(rowIndex, colIndex) : open(rowIndex, colIndex);
+}
+
 onMounted(() => {
   selectedSize.value = store.size;
-  init();
 });
 </script>
 
@@ -127,5 +142,6 @@ onMounted(() => {
   left: 0;
   top: 0;
   background: gray;
+  z-index: 2;
 }
 </style>

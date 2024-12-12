@@ -15,10 +15,9 @@ export const useAppStore = defineStore("app", {
   }),
   actions: {
     initBoard() {
-      this.flagCount = 0;
-      this.isWin = false;
-      this.first = true;
       this.gaming = true;
+      this.flagCount = 0;
+      this.first = true;
       let size = this.size;
       this.ground = Array.from({ length: size }, () => Array(size).fill(0));
       this.boards = Array.from({ length: size }, () => Array(size).fill(0));
@@ -55,10 +54,15 @@ export const useAppStore = defineStore("app", {
 
       this.ground[row][col] = 2;
 
+      navigator.vibrate(100);
+
       if (this.boards[row][col] == 9) {
+        this.isWin = false;
         this.gaming = false;
         return;
       }
+
+      this.checkOpenWin();
 
       if (this.boards[row][col] == 0) {
         this.openAround(row, col);
@@ -95,9 +99,9 @@ export const useAppStore = defineStore("app", {
         this.ground[row][col] = 1;
         this.flagCount++;
       }
-      this.checkWin();
+      this.checkMarkWin();
     },
-    checkWin() {
+    checkMarkWin() {
       if (this.bombsList.length != this.flagCount) return;
       let flags: any = [];
       this.ground.flat().forEach((item: any, index: any) => {
@@ -112,6 +116,15 @@ export const useAppStore = defineStore("app", {
         this.isWin = false;
       }
       this.gaming = false;
+      navigator.vibrate(300);
+    },
+    checkOpenWin() {
+      let unopens = this.ground.flat().filter((item: any) => item != 2).length;
+      if (unopens == this.bombsList.length) {
+        this.isWin = true;
+        this.gaming = false;
+        navigator.vibrate(300);
+      }
     },
   },
   persist: true,

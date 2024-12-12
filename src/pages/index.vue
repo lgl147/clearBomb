@@ -1,8 +1,8 @@
 <template>
-  <v-container class="d-flex justify-center align-center h-100" @contextmenu.prevent>
-    <v-card>
+  <v-container class="h-100 d-flex justify-center align-center" @contextmenu.prevent>
+    <div class="elevation-0" style="aspect-ratio: 0.8">
       <game-board></game-board>
-    </v-card>
+    </div>
   </v-container>
 </template>
 
