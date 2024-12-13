@@ -24,6 +24,7 @@ export const useAppStore = defineStore("app", {
       this.ground = Array.from({ length: size }, () => Array(size).fill(0));
       let bombs = ((size * size) / 3 / 3) * this.diff;
       this.bombsList = random(size * size, bombs);
+      console.log(this.bombsList);
       this.computeBomb();
     },
     computeBomb() {
@@ -59,7 +60,7 @@ export const useAppStore = defineStore("app", {
       if (this.boards[row][col] >= 100) {
         if (this.heart > 0) {
           this.brokeHeart();
-          this.ground[row][col] = 1;
+          this.mark(row, col);
           return;
         } else {
           this.isWin = false;
