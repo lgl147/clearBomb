@@ -1,5 +1,7 @@
 # Clear Bomb
 
+![image.png](https://img12.360buyimg.com/ddimg/jfs/t1/271836/11/2426/11258/67d29579Fd9f3fd3c/624d265569944fd2.jpg)
+
 ## 💡 Usage
 
 This section covers how to start the development server and build your project for production.
